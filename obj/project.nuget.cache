@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "epcmOElQgko=",
+  "success": true,
+  "projectFilePath": "N:\\Projects\\VSCodeProjects\\DashboardApp\\DashboardApp.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\totoa\\.nuget\\packages\\system.configuration.configurationmanager\\10.0.5\\system.configuration.configurationmanager.10.0.5.nupkg.sha512",
+    "C:\\Users\\totoa\\.nuget\\packages\\system.diagnostics.eventlog\\10.0.5\\system.diagnostics.eventlog.10.0.5.nupkg.sha512",
+    "C:\\Users\\totoa\\.nuget\\packages\\system.diagnostics.performancecounter\\10.0.5\\system.diagnostics.performancecounter.10.0.5.nupkg.sha512",
+    "C:\\Users\\totoa\\.nuget\\packages\\system.security.cryptography.protecteddata\\10.0.5\\system.security.cryptography.protecteddata.10.0.5.nupkg.sha512"
+  ],
+  "logs": []
+}
