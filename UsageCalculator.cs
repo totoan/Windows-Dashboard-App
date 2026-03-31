@@ -38,8 +38,6 @@ public class CpuCalculator
 
         return usage;
     }
-
-    
 }
 
 public class GpuCalculator
