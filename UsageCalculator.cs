@@ -16,7 +16,7 @@ while (true)
     Console.WriteLine("CPU:" + cpuusage + "%");
     Console.WriteLine("GPU:" + gpuusage + "%");
     Console.WriteLine("RAM:" + ramusage + "%");
-    Console.WriteLine("Network In:" + (netusage.In/1000) + "KB/s | Network Out:" + (netusage.Out/1000) + "KB/s");
+    Console.WriteLine("Network In:" + Math.Round(netusage.In/1000) + "KB/s | Network Out:" + Math.Round(netusage.Out/1000) + "KB/s");
 
     Thread.Sleep(1000);
 }
