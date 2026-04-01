@@ -2,18 +2,21 @@
 
 GpuCalculator gpu = new GpuCalculator();
 CpuCalculator cpu = new CpuCalculator();
+RamCalculator ram = new RamCalculator();
 NetworkCalculator net = new NetworkCalculator();
 
 while (true)
 {
     float cpuusage = cpu.GetCpuUsage();
     float gpuusage = gpu.GetGpuUsage();
+    float ramusage = ram.GetRamUsage();
     var netusage = net.GetNetworkUsage();
 
     Console.Clear();
     Console.WriteLine("CPU:" + cpuusage + "%");
     Console.WriteLine("GPU:" + gpuusage + "%");
-    Console.WriteLine("Network In:" + netusage.In + " | Network Out:" + netusage.Out);
+    Console.WriteLine("RAM:" + ramusage + "%");
+    Console.WriteLine("Network In:" + (netusage.In/1000) + "KB/s | Network Out:" + (netusage.Out/1000) + "KB/s");
 
     Thread.Sleep(1000);
 }
@@ -76,6 +79,28 @@ public class GpuCalculator
         }
 
         return total;
+    }
+}
+
+public class RamCalculator
+{
+    private PerformanceCounter counter;
+
+    public RamCalculator()
+    {
+        counter = new PerformanceCounter("Memory", "% Committed Bytes In Use");
+        counter.NextValue();
+
+        Thread.Sleep(1000);
+    }
+
+    public float GetRamUsage()
+    {
+        float usage;
+
+        usage = counter.NextValue();
+
+        return usage;
     }
 }
 
