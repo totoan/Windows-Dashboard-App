@@ -41,9 +41,9 @@ public partial class MainWindow : Window
         float ramusage = ram.GetRamUsage();
         var netusage = net.GetNetworkUsage();
 
-        CpuText.Text = $"CPU: {cpuusage}%";
-        GpuText.Text = $"GPU: {gpuusage}%";
-        RamText.Text = $"RAM: {ramusage}%";
-        NetText.Text = $"Network In: {Math.Round(netusage.In/1000)}KB/s | Network Out: {Math.Round(netusage.Out/1000)}KB/s";
+        CpuUsage.Text = $"{Math.Round(cpuusage, 1)}%";
+        GpuUsage.Text = $"{Math.Round(gpuusage, 1)}%";
+        RamUsage.Text = $"{Math.Round(ramusage, 1)}%";
+        NetUsage.Text = $"↑ {Math.Round(netusage.Out/1000)}KB/s\n↓ {Math.Round(netusage.In/1000)}KB/s";
     }
 }

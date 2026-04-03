@@ -5,11 +5,63 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DashboardApp"
         mc:Ignorable="d"
-        Title="Dashboard" Height="450" Width="800">
-    <StackPanel Margin="20">
-        <TextBlock x:Name="CpuText" FontSize="18" Margin="0,5"/>
-        <TextBlock x:Name="GpuText" FontSize="18" Margin="0,5"/>
-        <TextBlock x:Name="RamText" FontSize="18" Margin="0,5"/>
-        <TextBlock x:Name="NetText" FontSize="18" Margin="0,5"/>
-    </StackPanel>
+        Title="Dashboard" 
+        Height="450" 
+        Width="450"
+        Background="#111827">
+
+    <Window.Resources>
+        <Style x:Key="UsageTileStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="20"/>
+            <Setter Property="Margin" Value="40"/>
+        </Style>
+
+        <Style x:Key="UsageTitleStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Padding" Value="10"/>
+        </Style>
+
+        <Style x:Key="UsageValueStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="22"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,0,0,20"/>
+        </Style>
+    </Window.Resources>
+
+    <UniformGrid Rows="2" Columns="2">
+
+        <!-- CPU -->
+        <Border Style="{StaticResource UsageTileStyle}">
+            <StackPanel>
+                <TextBlock Text="CPU" Style="{StaticResource UsageTitleStyle}"/>
+                <TextBlock x:Name="CpuUsage" Style="{StaticResource UsageValueStyle}"/>
+            </StackPanel>
+        </Border>
+
+        <!-- GPU -->
+        <Border Style="{StaticResource UsageTileStyle}">
+            <StackPanel>
+                <TextBlock Text="GPU" Style="{StaticResource UsageTitleStyle}"/>
+                <TextBlock x:Name="GpuUsage" Style="{StaticResource UsageValueStyle}"/>
+            </StackPanel>
+        </Border>
+
+        <!-- RAM -->
+        <Border Style="{StaticResource UsageTileStyle}">
+            <StackPanel>
+                <TextBlock Text="RAM" Style="{StaticResource UsageTitleStyle}"/>
+                <TextBlock x:Name="RamUsage" Style="{StaticResource UsageValueStyle}"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Network -->
+        <Border Style="{StaticResource UsageTileStyle}">
+            <StackPanel>
+                <TextBlock Text="Network" Style="{StaticResource UsageTitleStyle}"/>
+                <TextBlock x:Name="NetUsage" Style="{StaticResource UsageValueStyle}"/>
+            </StackPanel>
+        </Border>
+    </UniformGrid>
 </Window>
