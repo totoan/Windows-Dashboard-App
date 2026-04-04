@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Dashboard" 
         Height="450" 
-        Width="450"
+        Width="1350"
         Background="#111827">
 
     <Window.Resources>
@@ -29,39 +29,48 @@
             <Setter Property="Margin" Value="0,0,0,20"/>
         </Style>
     </Window.Resources>
+    <StackPanel>
+        <UniformGrid Rows="1" Columns="2">
+            <!-- CPU -->
+            <Border Style="{StaticResource UsageTileStyle}">
+                <StackPanel>
+                    <TextBlock Text="CPU" Style="{StaticResource UsageTitleStyle}"/>
+                    <TextBlock x:Name="CpuUsage" Style="{StaticResource UsageValueStyle}"/>
+                </StackPanel>
+            </Border>
 
-    <UniformGrid Rows="2" Columns="2">
+            <!-- GPU -->
+            <Border Style="{StaticResource UsageTileStyle}">
+                <StackPanel>
+                    <TextBlock Text="GPU" Style="{StaticResource UsageTitleStyle}"/>
+                    <TextBlock x:Name="GpuUsage" Style="{StaticResource UsageValueStyle}"/>
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+        <UniformGrid Rows="1" Columns="3">
+            <!-- RAM -->
+            <Border Style="{StaticResource UsageTileStyle}">
+                <StackPanel>
+                    <TextBlock Text="RAM" Style="{StaticResource UsageTitleStyle}"/>
+                    <TextBlock x:Name="RamUsage" Style="{StaticResource UsageValueStyle}"/>
+                </StackPanel>
+            </Border>
 
-        <!-- CPU -->
-        <Border Style="{StaticResource UsageTileStyle}">
-            <StackPanel>
-                <TextBlock Text="CPU" Style="{StaticResource UsageTitleStyle}"/>
-                <TextBlock x:Name="CpuUsage" Style="{StaticResource UsageValueStyle}"/>
-            </StackPanel>
-        </Border>
+            <!-- Network -->
+            <Border Style="{StaticResource UsageTileStyle}">
+                <StackPanel>
+                    <TextBlock Text="Network" Style="{StaticResource UsageTitleStyle}"/>
+                    <TextBlock x:Name="NetUsage" Style="{StaticResource UsageValueStyle}"/>
+                </StackPanel>
+            </Border>
 
-        <!-- GPU -->
-        <Border Style="{StaticResource UsageTileStyle}">
-            <StackPanel>
-                <TextBlock Text="GPU" Style="{StaticResource UsageTitleStyle}"/>
-                <TextBlock x:Name="GpuUsage" Style="{StaticResource UsageValueStyle}"/>
-            </StackPanel>
-        </Border>
-
-        <!-- RAM -->
-        <Border Style="{StaticResource UsageTileStyle}">
-            <StackPanel>
-                <TextBlock Text="RAM" Style="{StaticResource UsageTitleStyle}"/>
-                <TextBlock x:Name="RamUsage" Style="{StaticResource UsageValueStyle}"/>
-            </StackPanel>
-        </Border>
-
-        <!-- Network -->
-        <Border Style="{StaticResource UsageTileStyle}">
-            <StackPanel>
-                <TextBlock Text="Network" Style="{StaticResource UsageTitleStyle}"/>
-                <TextBlock x:Name="NetUsage" Style="{StaticResource UsageValueStyle}"/>
-            </StackPanel>
-        </Border>
-    </UniformGrid>
+            <!-- Storage -->
+            <Border Style = "{StaticResource UsageTileStyle}">
+                <StackPanel>
+                    <TextBlock Text= "Storage" Style="{StaticResource UsageTitleStyle}"/>
+                    <TextBlock x:Name="StorUsage" Style="{StaticResource UsageValueStyle}"/>
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+    </StackPanel>
 </Window>

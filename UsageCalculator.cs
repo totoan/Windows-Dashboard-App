@@ -1,25 +1,29 @@
 ﻿using System.Diagnostics;
+using System.IO;
 
-// GpuCalculator gpu = new GpuCalculator();
-// CpuCalculator cpu = new CpuCalculator();
-// RamCalculator ram = new RamCalculator();
-// NetworkCalculator net = new NetworkCalculator();
+    // GpuCalculator gpu = new GpuCalculator();
+    // CpuCalculator cpu = new CpuCalculator();
+    // RamCalculator ram = new RamCalculator();
+    // NetworkCalculator net = new NetworkCalculator();
+    // StorageCalculator stor = new StorageCalculator();
 
-// while (true)
-// {
-//     float cpuusage = cpu.GetCpuUsage();
-//     float gpuusage = gpu.GetGpuUsage();
-//     float ramusage = ram.GetRamUsage();
-//     var netusage = net.GetNetworkUsage();
+    // while (true)
+    // {
+    //     float cpuusage = cpu.GetCpuUsage();
+    //     float gpuusage = gpu.GetGpuUsage();
+    //     float ramusage = ram.GetRamUsage();
+    //     var netusage = net.GetNetworkUsage();
+    //     float storusage = stor.GetStorageUsage();
 
-//     Console.Clear();
-//     Console.WriteLine("CPU:" + cpuusage + "%");
-//     Console.WriteLine("GPU:" + gpuusage + "%");
-//     Console.WriteLine("RAM:" + ramusage + "%");
-//     Console.WriteLine("Network In:" + Math.Round(netusage.In/1000) + "KB/s | Network Out:" + Math.Round(netusage.Out/1000) + "KB/s");
+    //     Console.Clear();
+    //     Console.WriteLine("CPU:" + cpuusage + "%");
+    //     Console.WriteLine("GPU:" + gpuusage + "%");
+    //     Console.WriteLine("RAM:" + ramusage + "%");
+    //     Console.WriteLine("Network In:" + Math.Round(netusage.In/1000) + "KB/s | Network Out:" + Math.Round(netusage.Out/1000) + "KB/s");
+    //     Console.WriteLine("Storage: C: " + storusage);
 
-//     Thread.Sleep(1000);
-// }
+    //     Thread.Sleep(1000);
+    // }
 
 namespace DashboardApp
 {
@@ -128,6 +132,27 @@ namespace DashboardApp
             float usageout = outcounter.NextValue();
 
             return (usagein, usageout);
+        }
+    }
+
+    public class StorageCalculator
+    {
+        public List<(string Name, float Size, float InUse)> GetStorageUsage()
+        {
+            var drivecounts = new List<(string name, float size, float inuse)>();
+            DriveInfo[] allDrives = DriveInfo.GetDrives();
+            foreach (DriveInfo d in allDrives)
+            {
+                if (d.IsReady)
+                {
+                    string name = d.Name;
+                    float size = d.TotalSize;
+                    float inuse = d.TotalSize - d.AvailableFreeSpace;
+
+                    drivecounts.Add((name, size, inuse));
+                }
+            }
+            return drivecounts;
         }
     }
 }
