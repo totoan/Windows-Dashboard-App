@@ -12,14 +12,15 @@
 
     <Window.Resources>
         <Style x:Key="UsageTileStyle" TargetType="Border">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="CornerRadius" Value="20"/>
+            <Setter Property="Background" Value="#112327"/>
+            <Setter Property="CornerRadius" Value="10"/>
             <Setter Property="Margin" Value="40"/>
         </Style>
 
         <Style x:Key="UsageTitleStyle" TargetType="TextBlock">
             <Setter Property="FontSize" Value="18"/>
             <Setter Property="Padding" Value="10"/>
+            <Setter Property="Foreground" Value="White"/>
         </Style>
 
         <Style x:Key="UsageValueStyle" TargetType="TextBlock">
@@ -27,8 +28,10 @@
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="Margin" Value="0,0,0,20"/>
+            <Setter Property="Foreground" Value="White"/>
         </Style>
     </Window.Resources>
+
     <StackPanel>
         <UniformGrid Rows="1" Columns="2">
             <!-- CPU -->
@@ -47,6 +50,7 @@
                 </StackPanel>
             </Border>
         </UniformGrid>
+        
         <UniformGrid Rows="1" Columns="3">
             <!-- RAM -->
             <Border Style="{StaticResource UsageTileStyle}">
