@@ -9,11 +9,20 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
+using System.Windows;
+
 namespace DashboardApp;
+
+public class OAuthConfig
+{
+    public string client_id { get; set; } = "";
+    public string client_secret { get; set; } = "";
+}
 
 public class AuthService
 {
-    private const string ClientId = "907730864644-jbjp4pr8c8qs2i06j7g7e5632672dvap.apps.googleusercontent.com";
+    private OAuthConfig? _config;
+
     private const string RedirectUri = "http://localhost:5000/";
     private const string TokenUrl = "https://oauth2.googleapis.com/token";
     private const string AuthUrl = "https://accounts.google.com/o/oauth2/v2/auth";
@@ -23,6 +32,11 @@ public class AuthService
 
     private string? _accessToken;
     public string? AccessToken => _accessToken;
+
+    public AuthService()
+    {
+        _config = LoadConfig();
+    }
 
     // =============================
     // PUBLIC ENTRY POINT
@@ -38,13 +52,15 @@ public class AuthService
                 TokenResponse loginTokens;
 
                 if (saved != null && !string.IsNullOrEmpty(saved.refresh_token))
+                
                 {
                     try
                     {
                         loginTokens = await RefreshTokenAsync(saved.refresh_token);
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        MessageBox.Show(ex.Message);
                         loginTokens = await LoginAsync();
                     }
                 }
@@ -60,7 +76,7 @@ public class AuthService
             }
             catch
             {
-                // refresh failed → fall back to login
+                MessageBox.Show("refresh failed → fall back to login");
             }
         }
 
@@ -82,19 +98,20 @@ public class AuthService
     // =============================
     private async Task<TokenResponse> LoginAsync()
     {
+        _config = LoadConfig();
+
         string codeVerifier = GenerateCodeVerifier();
         string codeChallenge = GenerateCodeChallenge(codeVerifier);
 
         string authRequest =
             $"{AuthUrl}" +
-            $"?client_id={ClientId}" +
+            $"?client_id={_config.client_id}" +
             $"&redirect_uri={Uri.EscapeDataString(RedirectUri)}" +
             $"&response_type=code" +
             $"&scope={Uri.EscapeDataString(Scope)}" +
             $"&code_challenge={codeChallenge}" +
             $"&code_challenge_method=S256" +
-            $"&access_type=offline" +
-            $"&prompt=consent";
+            $"&access_type=offline";
 
         using var listener = new HttpListener();
         listener.Prefixes.Add(RedirectUri);
@@ -124,11 +141,27 @@ public class AuthService
         return await ExchangeCodeAsync(code, codeVerifier);
     }
 
+    private OAuthConfig LoadConfig()
+    {
+        string json = File.ReadAllText("oauth_config.json");
+
+        var config = JsonSerializer.Deserialize<OAuthConfig>(json);
+
+        if (config == null)
+            throw new Exception("Failed to load OAuth config");
+
+        return config;
+    }
+
     private async Task<TokenResponse> ExchangeCodeAsync(string code, string codeVerifier)
     {
+        if (_config == null)
+            throw new Exception("[Exception] _config is null.");
+
         var values = new Dictionary<string, string>
         {
-            { "client_id", ClientId },
+            { "client_id", _config.client_id },
+            { "client_secret", _config.client_secret },
             { "code", code },
             { "code_verifier", codeVerifier },
             { "grant_type", "authorization_code" },
@@ -152,9 +185,13 @@ public class AuthService
     // =============================
     private async Task<TokenResponse> RefreshTokenAsync(string refreshToken)
     {
+        if (_config == null)
+            throw new Exception("[Exception] _config is null.");
+
         var values = new Dictionary<string, string>
         {
-            { "client_id", ClientId },
+            { "client_id", _config.client_id },
+            { "client_secret", _config.client_secret },
             { "grant_type", "refresh_token" },
             { "refresh_token", refreshToken }
         };

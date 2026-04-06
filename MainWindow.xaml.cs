@@ -13,16 +13,23 @@ using System.Windows.Threading;
 namespace DashboardApp;
 public partial class MainWindow : Window
 {
+    // Web Services
+    private AuthService auth;
+
+    // Calculators
     private CpuCalculator cpu;
     private GpuCalculator gpu;
     private RamCalculator ram;
     private NetworkCalculator net;
     private StorageCalculator stor;
+
     private DispatcherTimer timer;
 
     public MainWindow()
     {
         InitializeComponent();
+
+        auth = new AuthService();
 
         cpu = new CpuCalculator();
         gpu = new GpuCalculator();
@@ -31,9 +38,36 @@ public partial class MainWindow : Window
         stor = new StorageCalculator();
 
         timer = new DispatcherTimer();
+        
         timer.Interval = TimeSpan.FromSeconds(1);
         timer.Tick += Timer_Tick;
         timer.Start();
+
+        _ = YouTube_Service();
+    }
+
+    private async Task YouTube_Service()
+    {
+        await auth.InitializeAsync();
+
+        if (auth?.AccessToken != null)
+        {
+            var api = new YouTubeService(auth.AccessToken);
+            List<SubscriptionVideo> videos = await api.GetUploadsAsync();
+            
+            string text = "";
+
+            foreach (var vid in videos)
+            {
+                text += $"{vid.Title}\n{vid.ChannelTitle}\n{vid.ThumbnailUrl}\n\n";
+            }
+
+            MessageBox.Show(text);
+        }
+        else
+        {
+            MessageBox.Show("[Exception] auth.AccessToken returned null.");
+        }
     }
 
     private void Timer_Tick(object? sender, EventArgs e)
