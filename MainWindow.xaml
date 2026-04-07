@@ -13,8 +13,12 @@
     <Window.Resources>
         <Style x:Key="UsageTileStyle" TargetType="Border">
             <Setter Property="Background" Value="#112327"/>
+            <Setter Property="BorderBrush" Value="#0e189a"/>
+            <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="CornerRadius" Value="10"/>
-            <Setter Property="Margin" Value="40"/>
+            <Setter Property="Margin" Value="20"/>
+            <Setter Property="Width" Value="250"/>
+            <Setter Property="Height" Value="200"/>
         </Style>
 
         <Style x:Key="UsageTitleStyle" TargetType="TextBlock">
@@ -30,51 +34,72 @@
             <Setter Property="Margin" Value="0,0,0,20"/>
             <Setter Property="Foreground" Value="White"/>
         </Style>
+            
+        <Style x:Key="YouTubePanelStyle" TargetType="Border">
+            <Setter Property="Background" Value="#112327"/>
+            <Setter Property="BorderBrush" Value="#0e189a"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Margin" Value="30"/>
+            <Setter Property="MaxWidth" Value="450"/>
+            <Setter Property="Height" Value="400"/>
+        </Style>
     </Window.Resources>
 
     <StackPanel>
-        <UniformGrid Rows="1" Columns="2">
-            <!-- CPU -->
-            <Border Style="{StaticResource UsageTileStyle}">
-                <StackPanel>
-                    <TextBlock Text="CPU" Style="{StaticResource UsageTitleStyle}"/>
-                    <TextBlock x:Name="CpuUsage" Style="{StaticResource UsageValueStyle}"/>
-                </StackPanel>
-            </Border>
+        <Button Content="⨉" FontSize="24" Foreground="White" Click="CloseButton_Click" HorizontalAlignment="Right" Margin="10" Background="Transparent" BorderBrush="Transparent"/>
+        <StackPanel Orientation="Horizontal">
+            <StackPanel Margin="20">
+                <UniformGrid Rows="1" Columns="2">
+                    <!-- CPU -->
+                    <Border Style="{StaticResource UsageTileStyle}">
+                        <StackPanel>
+                            <TextBlock Text="CPU" Style="{StaticResource UsageTitleStyle}"/>
+                            <TextBlock x:Name="CpuUsage" Style="{StaticResource UsageValueStyle}"/>
+                        </StackPanel>
+                    </Border>
 
-            <!-- GPU -->
-            <Border Style="{StaticResource UsageTileStyle}">
-                <StackPanel>
-                    <TextBlock Text="GPU" Style="{StaticResource UsageTitleStyle}"/>
-                    <TextBlock x:Name="GpuUsage" Style="{StaticResource UsageValueStyle}"/>
-                </StackPanel>
-            </Border>
-        </UniformGrid>
-        
-        <UniformGrid Rows="1" Columns="3">
-            <!-- RAM -->
-            <Border Style="{StaticResource UsageTileStyle}">
-                <StackPanel>
-                    <TextBlock Text="RAM" Style="{StaticResource UsageTitleStyle}"/>
-                    <TextBlock x:Name="RamUsage" Style="{StaticResource UsageValueStyle}"/>
-                </StackPanel>
-            </Border>
+                    <!-- GPU -->
+                    <Border Style="{StaticResource UsageTileStyle}">
+                        <StackPanel>
+                            <TextBlock Text="GPU" Style="{StaticResource UsageTitleStyle}"/>
+                            <TextBlock x:Name="GpuUsage" Style="{StaticResource UsageValueStyle}"/>
+                        </StackPanel>
+                    </Border>
+                </UniformGrid>
+                
+                <UniformGrid Rows="1" Columns="3">
+                    <!-- RAM -->
+                    <Border Style="{StaticResource UsageTileStyle}">
+                        <StackPanel>
+                            <TextBlock Text="RAM" Style="{StaticResource UsageTitleStyle}"/>
+                            <TextBlock x:Name="RamUsage" Style="{StaticResource UsageValueStyle}"/>
+                        </StackPanel>
+                    </Border>
 
-            <!-- Network -->
-            <Border Style="{StaticResource UsageTileStyle}">
-                <StackPanel>
-                    <TextBlock Text="Network" Style="{StaticResource UsageTitleStyle}"/>
-                    <TextBlock x:Name="NetUsage" Style="{StaticResource UsageValueStyle}"/>
-                </StackPanel>
-            </Border>
+                    <!-- Network -->
+                    <Border Style="{StaticResource UsageTileStyle}">
+                        <StackPanel>
+                            <TextBlock Text="Network" Style="{StaticResource UsageTitleStyle}"/>
+                            <TextBlock x:Name="NetUsage" Style="{StaticResource UsageValueStyle}"/>
+                        </StackPanel>
+                    </Border>
 
-            <!-- Storage -->
-            <Border Style = "{StaticResource UsageTileStyle}">
-                <StackPanel>
-                    <TextBlock Text= "Storage" Style="{StaticResource UsageTitleStyle}"/>
-                    <TextBlock x:Name="StorUsage" Style="{StaticResource UsageValueStyle}"/>
-                </StackPanel>
-            </Border>
-        </UniformGrid>
+                    <!-- Storage -->
+                    <Border Style = "{StaticResource UsageTileStyle}">
+                        <StackPanel>
+                            <TextBlock Text= "Storage" Style="{StaticResource UsageTitleStyle}"/>
+                            <TextBlock x:Name="StorUsage" Style="{StaticResource UsageValueStyle}"/>
+                        </StackPanel>
+                    </Border>
+                </UniformGrid>
+            </StackPanel>
+                <!-- YouTube -->
+                <Border Style = "{StaticResource YouTubePanelStyle}">
+                    <ScrollViewer VerticalScrollBarVisibility="Hidden">
+                        <StackPanel x:Name="YouTubeUploadsList"/>
+                    </ScrollViewer>
+                </Border>
+        </StackPanel>
     </StackPanel>
 </Window>

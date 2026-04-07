@@ -23,7 +23,8 @@ public partial class MainWindow : Window
     private NetworkCalculator net;
     private StorageCalculator stor;
 
-    private DispatcherTimer timer;
+    private DispatcherTimer usageTimer;
+    private DispatcherTimer youtubeTimer;
 
     public MainWindow()
     {
@@ -37,40 +38,100 @@ public partial class MainWindow : Window
         net = new NetworkCalculator();
         stor = new StorageCalculator();
 
-        timer = new DispatcherTimer();
+        usageTimer = new DispatcherTimer();
+        youtubeTimer = new DispatcherTimer();
         
-        timer.Interval = TimeSpan.FromSeconds(1);
-        timer.Tick += Timer_Tick;
-        timer.Start();
+        usageTimer.Interval = TimeSpan.FromSeconds(1);
+        usageTimer.Tick += UsageTimer_Tick;
+        usageTimer.Start();
 
-        _ = YouTube_Service();
+        Loaded += MainWindow_Loaded;
+    }
+
+    private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
+    {
+        await auth.InitializeAsync();
+
+        youtubeTimer.Interval = TimeSpan.FromMinutes(15);
+        youtubeTimer.Tick += async (s, e) => await YouTube_Service();
+        youtubeTimer.Start();
+
+        await YouTube_Service();
+    }
+
+    private void CloseButton_Click(object sender, RoutedEventArgs e)
+    {
+        Close();
     }
 
     private async Task YouTube_Service()
     {
-        await auth.InitializeAsync();
+        youtubeTimer.Stop();
 
         if (auth?.AccessToken != null)
         {
             var api = new YouTubeService(auth.AccessToken);
             List<SubscriptionVideo> videos = await api.GetUploadsAsync();
-            
-            string text = "";
+
+            YouTubeUploadsList.Children.Clear();
 
             foreach (var vid in videos)
             {
-                text += $"{vid.Title}\n{vid.ChannelTitle}\n{vid.ThumbnailUrl}\n\n";
-            }
+                StackPanel itemPanel = new StackPanel
+                {
+                    Orientation = Orientation.Horizontal,
+                };
 
-            MessageBox.Show(text);
+                Image thumbnail = new Image
+                {
+                    Width = 120,
+                    Height = 68,
+                };
+
+                BitmapImage bi = new BitmapImage();
+                bi.BeginInit();
+                bi.UriSource = new Uri(vid.ThumbnailUrl);
+                bi.EndInit();
+
+                thumbnail.Source = bi;
+
+                StackPanel textPanel = new StackPanel
+                {
+                    Orientation = Orientation.Vertical
+                };
+
+                TextBlock titleBlock = new TextBlock
+                {
+                    Text = vid.Title,
+                    FontWeight = FontWeights.Bold,
+                    TextWrapping = TextWrapping.Wrap,
+                    Foreground = Brushes.White
+                };
+
+                TextBlock channelBlock = new TextBlock
+                {
+                    Text = vid.ChannelTitle,
+                    Foreground = Brushes.White
+                };
+
+                textPanel.Children.Add(titleBlock);
+                textPanel.Children.Add(channelBlock);
+
+                itemPanel.Children.Add(thumbnail);
+                itemPanel.Children.Add(textPanel);
+
+                YouTubeUploadsList.Children.Add(itemPanel);
+            }
         }
         else
         {
             MessageBox.Show("[Exception] auth.AccessToken returned null.");
         }
+
+        youtubeTimer.Start();
     }
 
-    private void Timer_Tick(object? sender, EventArgs e)
+    private void UsageTimer_Tick(object? sender, EventArgs e)
     {
         float cpuusage = cpu.GetCpuUsage();
         float gpuusage = gpu.GetGpuUsage();

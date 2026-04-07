@@ -57,6 +57,11 @@ public class AuthService
                     try
                     {
                         loginTokens = await RefreshTokenAsync(saved.refresh_token);
+
+                        if (string.IsNullOrEmpty(loginTokens.refresh_token))
+                        {
+                            loginTokens.refresh_token = saved.refresh_token;
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -66,6 +71,7 @@ public class AuthService
                 }
                 else
                 {
+                    MessageBox.Show("Refresh Token not found. Please log in...");
                     loginTokens = await LoginAsync();
                 }
 
