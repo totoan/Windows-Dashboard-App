@@ -41,7 +41,7 @@
             <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="CornerRadius" Value="10"/>
             <Setter Property="Margin" Value="30"/>
-            <Setter Property="MaxWidth" Value="450"/>
+            <Setter Property="Width" Value="450"/>
             <Setter Property="Height" Value="400"/>
         </Style>
     </Window.Resources>
@@ -94,12 +94,16 @@
                     </Border>
                 </UniformGrid>
             </StackPanel>
+            
                 <!-- YouTube -->
+            <StackPanel>
                 <Border Style = "{StaticResource YouTubePanelStyle}">
                     <ScrollViewer VerticalScrollBarVisibility="Hidden">
-                        <StackPanel x:Name="YouTubeUploadsList"/>
+                        <StackPanel x:Name="YouTubeUploadsList" Margin="10,10,0,0"/>
                     </ScrollViewer>
                 </Border>
+                <Button Content="YT Refresh" FontSize="20" Foreground="White" Background="Black" Click="RefreshYTButton_Click" Width="100"/>
+            </StackPanel>
         </StackPanel>
     </StackPanel>
 </Window>

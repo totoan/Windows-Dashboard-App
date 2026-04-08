@@ -64,70 +64,97 @@ public partial class MainWindow : Window
         Close();
     }
 
+    private async void RefreshYTButton_Click(object sender, RoutedEventArgs e)
+    {
+        await YouTube_Service();
+    }
+
     private async Task YouTube_Service()
     {
         youtubeTimer.Stop();
 
-        if (auth?.AccessToken != null)
+        try
         {
-            var api = new YouTubeService(auth.AccessToken);
-            List<SubscriptionVideo> videos = await api.GetUploadsAsync();
-
-            YouTubeUploadsList.Children.Clear();
-
-            foreach (var vid in videos)
+            if (auth?.AccessToken != null)
             {
-                StackPanel itemPanel = new StackPanel
+                var api = new YouTubeService(auth.AccessToken);
+                List<SubscriptionVideo> videos = await api.GetUploadsAsync();
+
+                if (videos == null)
                 {
-                    Orientation = Orientation.Horizontal,
-                };
+                    MessageBox.Show("Videos was null");  
+                    return;      
+                }
 
-                Image thumbnail = new Image
+                if (videos.Count == 0)
                 {
-                    Width = 120,
-                    Height = 68,
-                };
+                    MessageBox.Show("Videos list was empty");
+                    return;
+                }
 
-                BitmapImage bi = new BitmapImage();
-                bi.BeginInit();
-                bi.UriSource = new Uri(vid.ThumbnailUrl);
-                bi.EndInit();
-
-                thumbnail.Source = bi;
-
-                StackPanel textPanel = new StackPanel
+                if (videos.Count > 0)
                 {
-                    Orientation = Orientation.Vertical
-                };
+                    YouTubeUploadsList.Children.Clear();
+                }
 
-                TextBlock titleBlock = new TextBlock
+                foreach (var vid in videos)
                 {
-                    Text = vid.Title,
-                    FontWeight = FontWeights.Bold,
-                    TextWrapping = TextWrapping.Wrap,
-                    Foreground = Brushes.White
-                };
+                    StackPanel itemPanel = new StackPanel
+                    {
+                        Orientation = Orientation.Horizontal,
+                    };
 
-                TextBlock channelBlock = new TextBlock
-                {
-                    Text = vid.ChannelTitle,
-                    Foreground = Brushes.White
-                };
+                    Image thumbnail = new Image
+                    {
+                        Width = 120,
+                        Height = 68,
+                    };
 
-                textPanel.Children.Add(titleBlock);
-                textPanel.Children.Add(channelBlock);
+                    BitmapImage bi = new BitmapImage();
+                    bi.BeginInit();
+                    bi.UriSource = new Uri(vid.ThumbnailUrl);
+                    bi.EndInit();
 
-                itemPanel.Children.Add(thumbnail);
-                itemPanel.Children.Add(textPanel);
+                    thumbnail.Source = bi;
 
-                YouTubeUploadsList.Children.Add(itemPanel);
+                    StackPanel textPanel = new StackPanel
+                    {
+                        Orientation = Orientation.Vertical
+                    };
+
+                    TextBlock titleBlock = new TextBlock
+                    {
+                        Text = vid.Title,
+                        FontWeight = FontWeights.Bold,
+                        TextWrapping = TextWrapping.Wrap,
+                        Foreground = Brushes.White
+                    };
+
+                    TextBlock channelBlock = new TextBlock
+                    {
+                        Text = vid.ChannelTitle,
+                        Foreground = Brushes.White
+                    };
+
+                    textPanel.Children.Add(titleBlock);
+                    textPanel.Children.Add(channelBlock);
+
+                    itemPanel.Children.Add(thumbnail);
+                    itemPanel.Children.Add(textPanel);
+
+                    YouTubeUploadsList.Children.Add(itemPanel);
+                }
+            }
+            
+            else
+            {
+                MessageBox.Show("[Exception] auth.AccessToken returned null.");
             }
         }
-        else
+        catch (Exception ex)
         {
-            MessageBox.Show("[Exception] auth.AccessToken returned null.");
+            MessageBox.Show(ex.ToString());
         }
-
         youtubeTimer.Start();
     }
 
