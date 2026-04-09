@@ -1,29 +1,7 @@
 ﻿using System.Diagnostics;
 using System.IO;
 
-    // GpuCalculator gpu = new GpuCalculator();
-    // CpuCalculator cpu = new CpuCalculator();
-    // RamCalculator ram = new RamCalculator();
-    // NetworkCalculator net = new NetworkCalculator();
-    // StorageCalculator stor = new StorageCalculator();
-
-    // while (true)
-    // {
-    //     float cpuusage = cpu.GetCpuUsage();
-    //     float gpuusage = gpu.GetGpuUsage();
-    //     float ramusage = ram.GetRamUsage();
-    //     var netusage = net.GetNetworkUsage();
-    //     float storusage = stor.GetStorageUsage();
-
-    //     Console.Clear();
-    //     Console.WriteLine("CPU:" + cpuusage + "%");
-    //     Console.WriteLine("GPU:" + gpuusage + "%");
-    //     Console.WriteLine("RAM:" + ramusage + "%");
-    //     Console.WriteLine("Network In:" + Math.Round(netusage.In/1000) + "KB/s | Network Out:" + Math.Round(netusage.Out/1000) + "KB/s");
-    //     Console.WriteLine("Storage: C: " + storusage);
-
-    //     Thread.Sleep(1000);
-    // }
+using System.Windows;
 
 namespace DashboardApp
 {
@@ -35,8 +13,6 @@ namespace DashboardApp
         {
             counter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
             counter.NextValue();
-
-            // Thread.Sleep(1000);
         }
 
         public float GetCpuUsage()
@@ -52,36 +28,77 @@ namespace DashboardApp
     public class GpuCalculator
     {
         private PerformanceCounterCategory gpuCounterCat;
-        private List<PerformanceCounter> gpuCountersList;
+        private Dictionary<string, PerformanceCounter> gpuCounters;
 
         public GpuCalculator()
         {
             gpuCounterCat = new PerformanceCounterCategory("GPU Engine");
-            gpuCountersList = new List<PerformanceCounter>();
+            gpuCounters = new Dictionary<string, PerformanceCounter>();
 
-            string[] gpuInstanceNames = gpuCounterCat.GetInstanceNames();
-        
-            foreach (string name in gpuInstanceNames)
-            {
-                PerformanceCounter gpuCounter = new PerformanceCounter("GPU Engine", "Utilization Percentage", name);
-                gpuCountersList.Add(gpuCounter);
-            }
-
-            foreach (PerformanceCounter counter in gpuCountersList)
-            {
-                counter.NextValue();
-            }
-
-            // Thread.Sleep(1000);
+            RefreshCounters();
         }
+
+        private void RefreshCounters()
+        {
+            string[] activeNames = gpuCounterCat.GetInstanceNames();
+
+            List<string> validNames = new List<string>();
+
+            foreach (string name in activeNames)
+            {
+                if (name.Contains("engtype_3D"))
+                {
+                    validNames.Add(name);
+
+                    if (!gpuCounters.ContainsKey(name))
+                    {
+                        PerformanceCounter counter = new PerformanceCounter("GPU Engine", "Utilization Percentage", name);
+
+                        counter.NextValue();
+                        gpuCounters.Add(name, counter);
+                    }
+                }
+            }
+            List<string> inactiveNames = new List<string>();
+
+            foreach (string savedName in gpuCounters.Keys)
+            {
+                if (!validNames.Contains(savedName))
+                {
+                    inactiveNames.Add(savedName);
+                }
+            }
+
+            foreach (string name in inactiveNames)
+            {
+                gpuCounters[name].Dispose();
+                gpuCounters.Remove(name);
+            }
+        }   
 
         public float GetGpuUsage()
         {
-            float total = 0;
+            RefreshCounters();
 
-            foreach (PerformanceCounter counter in gpuCountersList)
+            float total = 0;
+            List<string> badNames = new List<string>();
+
+            foreach (var pair in gpuCounters)
             {
-                total += counter.NextValue();
+                try
+                {
+                    total += pair.Value.NextValue();
+                }
+                catch
+                {
+                    badNames.Add(pair.Key);
+                }
+            }
+
+            foreach (string name in badNames)
+            {
+                gpuCounters[name].Dispose();
+                gpuCounters.Remove(name);
             }
 
             return total;
@@ -96,8 +113,6 @@ namespace DashboardApp
         {
             counter = new PerformanceCounter("Memory", "% Committed Bytes In Use");
             counter.NextValue();
-
-            // Thread.Sleep(1000);
         }
 
         public float GetRamUsage()
@@ -122,8 +137,6 @@ namespace DashboardApp
 
             incounter.NextValue();
             outcounter.NextValue();
-
-            // Thread.Sleep(1000);
         }
 
         public (float In, float Out) GetNetworkUsage()
