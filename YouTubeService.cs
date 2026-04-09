@@ -36,10 +36,10 @@ public class YouTubeService
         var data = JsonSerializer.Deserialize<SubscriptionsResponse>(json);
 
         if (data == null)
-            MessageBox.Show("SubscriptionsResponse deserialized to null.");
+            throw new Exception("SubscriptionsResponse deserialized to null.");
 
         if (data.items == null || data.items.Count == 0)
-            MessageBox.Show("SubscriptionsResponse.items was empy.");
+            throw new Exception("SubscriptionsResponse.items was empy.");
 
         List<string> channelIds = new List<string>();
 
@@ -73,10 +73,10 @@ public class YouTubeService
         var data = JsonSerializer.Deserialize<ChannelResponse>(json);
 
         if (data == null)
-            MessageBox.Show("ChannelResponse deserialized to null.");
+            throw new Exception("ChannelResponse deserialized to null.");
 
         if (data.items == null || data.items.Count == 0)
-            MessageBox.Show("ChannelResponse.items was empty.");
+            throw new Exception("ChannelResponse.items was empty.");
         
         List<string> playlistIds = new List<string>();
 
@@ -111,10 +111,10 @@ public class YouTubeService
             var playlistData = JsonSerializer.Deserialize<PlaylistItemsResponse>(playlistJson);
 
             if (playlistData == null)
-                MessageBox.Show("PlaylistItemsResponse deserialized to null.");
+                throw new Exception("PlaylistItemsResponse deserialized to null.");
 
             if (playlistData.items == null)
-                MessageBox.Show($"playlistData.items was null for playlist {id}");
+                throw new Exception($"playlistData.items was null for playlist {id}");
 
             if (playlistData != null)
                 foreach (var item in playlistData.items)
