@@ -25,6 +25,7 @@ public partial class MainWindow : Window
 
     private DispatcherTimer usageTimer;
     private DispatcherTimer youtubeTimer;
+    private bool youtubeLoading = false;
 
     public MainWindow()
     {
@@ -71,13 +72,20 @@ public partial class MainWindow : Window
 
     private async Task YouTube_Service()
     {
+        if (youtubeLoading)
+            return;
+
+        youtubeLoading = true;
         youtubeTimer.Stop();
 
         try
         {
+            await auth.InitializeAsync();
+
             if (auth?.AccessToken != null)
             {
                 var api = new YouTubeService(auth.AccessToken);
+
                 List<SubscriptionVideo> videos = await api.GetUploadsAsync();
 
                 if (videos == null)
@@ -155,7 +163,11 @@ public partial class MainWindow : Window
         {
             MessageBox.Show(ex.ToString());
         }
-        youtubeTimer.Start();
+        finally
+        {
+            youtubeLoading = false;
+            youtubeTimer.Start();
+        }
     }
 
     private void UsageTimer_Tick(object? sender, EventArgs e)

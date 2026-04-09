@@ -3,6 +3,8 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Linq;
 
+using System.Windows;
+
 namespace DashboardApp;
 
 public class YouTubeService
@@ -23,6 +25,7 @@ public class YouTubeService
                      "&maxResults=50";
         
         var response = await _client.GetAsync(url);
+        response.EnsureSuccessStatusCode();
         
         return await response.Content.ReadAsStringAsync();
     }
@@ -31,8 +34,12 @@ public class YouTubeService
     {
         string json = await GetSubscriptionsAsync();
         var data = JsonSerializer.Deserialize<SubscriptionsResponse>(json);
+
         if (data == null)
-            return "";
+            MessageBox.Show("SubscriptionsResponse deserialized to null.");
+
+        if (data.items == null || data.items.Count == 0)
+            MessageBox.Show("SubscriptionsResponse.items was empy.");
 
         List<string> channelIds = new List<string>();
 
@@ -46,12 +53,16 @@ public class YouTubeService
             }
         }
 
+        if (channelIds.Count == 0)
+            MessageBox.Show("No ChannelIds were found from subscriptions.");
+
         string joinedIds = string.Join(",", channelIds);
         string url = "https://www.googleapis.com/youtube/v3/channels" +
         "?part=contentDetails" +
         $"&id={joinedIds}";
 
         var response = await _client.GetAsync(url);
+        response.EnsureSuccessStatusCode();
 
         return await response.Content.ReadAsStringAsync();
     }
@@ -60,10 +71,17 @@ public class YouTubeService
     {
         string json = await GetChannelDetailsAsync();
         var data = JsonSerializer.Deserialize<ChannelResponse>(json);
+
+        if (data == null)
+            MessageBox.Show("ChannelResponse deserialized to null.");
+
+        if (data.items == null || data.items.Count == 0)
+            MessageBox.Show("ChannelResponse.items was empty.");
         
         List<string> playlistIds = new List<string>();
 
         if (data != null)
+        {
             foreach (var item in data.items)
             {
                 string playlistId = item.contentDetails.relatedPlaylists.uploads;
@@ -73,6 +91,9 @@ public class YouTubeService
                     playlistIds.Add(playlistId);
                 }
             }
+        }
+        if (playlistIds.Count == 0)
+            MessageBox.Show("No uploads playlistIds were found.");
         
         List<SubscriptionVideo> subVideos = new List<SubscriptionVideo>();
         
@@ -84,9 +105,16 @@ public class YouTubeService
                          "&maxResults=5";
             
             var response = await _client.GetAsync(url);
+            response.EnsureSuccessStatusCode();
             
             string playlistJson = await response.Content.ReadAsStringAsync();
             var playlistData = JsonSerializer.Deserialize<PlaylistItemsResponse>(playlistJson);
+
+            if (playlistData == null)
+                MessageBox.Show("PlaylistItemsResponse deserialized to null.");
+
+            if (playlistData.items == null)
+                MessageBox.Show($"playlistData.items was null for playlist {id}");
 
             if (playlistData != null)
                 foreach (var item in playlistData.items)
