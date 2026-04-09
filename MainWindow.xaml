@@ -6,11 +6,12 @@
         xmlns:local="clr-namespace:DashboardApp"
         mc:Ignorable="d"
         Title="Dashboard" 
-        Height="450" 
-        Width="1350"
+        Height="450" MinHeight="450" 
+        Width="800" MinWidth="800"
         Background="#111827"
         WindowStyle="None"
-        AllowsTransparency="True">
+        AllowsTransparency="True"
+        ResizeMode="CanResizewithGrip">
 
     <Window.Resources>
         <Style x:Key="UsageTileStyle" TargetType="Border">
@@ -19,8 +20,6 @@
             <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="CornerRadius" Value="10"/>
             <Setter Property="Margin" Value="20"/>
-            <Setter Property="Width" Value="250"/>
-            <Setter Property="Height" Value="200"/>
         </Style>
 
         <Style x:Key="UsageTitleStyle" TargetType="TextBlock">
@@ -43,73 +42,110 @@
             <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="CornerRadius" Value="10"/>
             <Setter Property="Margin" Value="30"/>
-            <Setter Property="Width" Value="450"/>
-            <Setter Property="Height" Value="400"/>
         </Style>
     </Window.Resources>
 
-    <StackPanel>
-        <StackPanel MouseLeftButtonDown="Drag_Window" MouseMove="Drag_Window_From_Max" Background="Transparent">
-            <Border BorderThickness="0,0,0,1" BorderBrush="#0e189a" Margin="0,0,0,20">
-                <Button Content="⨉" FontSize="24" Foreground="White" Click="CloseButton_Click" HorizontalAlignment="Right" Margin="10" Background="Transparent" BorderBrush="Transparent"/>
-            </Border>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <StackPanel Margin="20">
-                <UniformGrid Rows="1" Columns="2">
-                    <!-- CPU -->
-                    <Border Style="{StaticResource UsageTileStyle}">
-                        <StackPanel>
-                            <TextBlock Text="CPU" Style="{StaticResource UsageTitleStyle}"/>
-                            <TextBlock x:Name="CpuUsage" Style="{StaticResource UsageValueStyle}"/>
-                        </StackPanel>
-                    </Border>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="*" MaxHeight="500"/>
+        </Grid.RowDefinitions>
 
-                    <!-- GPU -->
-                    <Border Style="{StaticResource UsageTileStyle}">
-                        <StackPanel>
-                            <TextBlock Text="GPU" Style="{StaticResource UsageTitleStyle}"/>
-                            <TextBlock x:Name="GpuUsage" Style="{StaticResource UsageValueStyle}"/>
-                        </StackPanel>
-                    </Border>
-                </UniformGrid>
-                
-                <UniformGrid Rows="1" Columns="3">
-                    <!-- RAM -->
-                    <Border Style="{StaticResource UsageTileStyle}">
-                        <StackPanel>
-                            <TextBlock Text="RAM" Style="{StaticResource UsageTitleStyle}"/>
-                            <TextBlock x:Name="RamUsage" Style="{StaticResource UsageValueStyle}"/>
-                        </StackPanel>
-                    </Border>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
-                    <!-- Network -->
-                    <Border Style="{StaticResource UsageTileStyle}">
-                        <StackPanel>
-                            <TextBlock Text="Network" Style="{StaticResource UsageTitleStyle}"/>
-                            <TextBlock x:Name="NetUsage" Style="{StaticResource UsageValueStyle}"/>
-                        </StackPanel>
-                    </Border>
+        <!-- Title bar -->
+        <Border Grid.Row="0" Grid.ColumnSpan="2" BorderThickness="0,0,0,1" BorderBrush="#0e189a">
+            <Grid Background="Transparent" MouseLeftButtonDown="Drag_Window" MouseMove="Drag_Window_From_Max">
+                <Button Content="⨉"
+                        FontSize="24"
+                        Foreground="White"
+                        Click="CloseButton_Click"
+                        Margin="0,10,20,10"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Background="Transparent"
+                        BorderBrush="Transparent"/>
+            </Grid>
+        </Border>
 
-                    <!-- Storage -->
-                    <Border Style = "{StaticResource UsageTileStyle}">
-                        <StackPanel>
-                            <TextBlock Text= "Storage" Style="{StaticResource UsageTitleStyle}"/>
-                            <TextBlock x:Name="StorUsage" Style="{StaticResource UsageValueStyle}"/>
-                        </StackPanel>
-                    </Border>
-                </UniformGrid>
-            </StackPanel>
-            
-                <!-- YouTube -->
-            <StackPanel>
-                <Border Style = "{StaticResource YouTubePanelStyle}">
-                    <ScrollViewer VerticalScrollBarVisibility="Hidden">
-                        <StackPanel x:Name="YouTubeUploadsList" Margin="10,10,0,0"/>
-                    </ScrollViewer>
+        <!-- Performance Counter Tiles -->
+        <Grid Grid.Row="1" Grid.Column="0" Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <UniformGrid Grid.Row="0" Rows="1" Columns="2">
+                <!-- CPU -->
+                <Border Style="{StaticResource UsageTileStyle}">
+                    <StackPanel>
+                        <TextBlock Text="CPU" Style="{StaticResource UsageTitleStyle}"/>
+                        <TextBlock x:Name="CpuUsage" Style="{StaticResource UsageValueStyle}"/>
+                    </StackPanel>
                 </Border>
-                <Button Content="YT Refresh" FontSize="20" Foreground="White" Background="Black" Click="RefreshYTButton_Click" Width="100"/>
-            </StackPanel>
-        </StackPanel>
-    </StackPanel>
+
+                <!-- GPU -->
+                <Border Style="{StaticResource UsageTileStyle}">
+                    <StackPanel>
+                        <TextBlock Text="GPU" Style="{StaticResource UsageTitleStyle}"/>
+                        <TextBlock x:Name="GpuUsage" Style="{StaticResource UsageValueStyle}"/>
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+                
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="1.5*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- RAM -->
+                <Border Grid.Column="0" Style="{StaticResource UsageTileStyle}">
+                    <StackPanel>
+                        <TextBlock Text="RAM" Style="{StaticResource UsageTitleStyle}"/>
+                        <TextBlock x:Name="RamUsage" Style="{StaticResource UsageValueStyle}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Network -->
+                <Border Grid.Column="1" Style="{StaticResource UsageTileStyle}">
+                    <StackPanel>
+                        <TextBlock Text="Network" Style="{StaticResource UsageTitleStyle}"/>
+                        <TextBlock x:Name="NetUsage" Style="{StaticResource UsageValueStyle}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Storage -->
+                <Border Grid.Column="2" Style = "{StaticResource UsageTileStyle}">
+                    <StackPanel>
+                        <TextBlock Text= "Storage" Style="{StaticResource UsageTitleStyle}"/>
+                        <TextBlock x:Name="StorUsage" Style="{StaticResource UsageValueStyle}"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
+                
+        <Grid Grid.Row="1" Grid.Column="1" Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- YouTube -->
+            <Border Grid.Row="0" Style = "{StaticResource YouTubePanelStyle}">
+                <ScrollViewer VerticalScrollBarVisibility="Hidden" Margin="0,10,0,10">
+                    <StackPanel x:Name="YouTubeUploadsList"/>
+                </ScrollViewer>
+            </Border>
+            <Button Grid.Row="1" 
+                Content="YT Refresh" FontSize="20" Foreground="White" 
+                Background="Black" 
+                Click="RefreshYTButton_Click" 
+                Width="100"/>
+        </Grid>
+    </Grid>
 </Window>
