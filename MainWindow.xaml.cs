@@ -60,6 +60,27 @@ public partial class MainWindow : Window
         await YouTube_Service();
     }
 
+    private void Drag_Window(object sender, MouseButtonEventArgs e)
+    {
+        if (e.ChangedButton == MouseButton.Left)
+        {
+            this.DragMove();
+        }
+    }
+
+    private void Drag_Window_From_Max(object sender, MouseEventArgs e)
+    {
+        if (e.LeftButton == MouseButtonState.Pressed && this.WindowState == WindowState.Maximized)
+        {
+            Point mousePos = PointToScreen(e.GetPosition(this));
+
+            this.WindowState = WindowState.Normal;
+            this.Top = mousePos.Y - 20;
+
+            this.DragMove();
+        }
+    }
+
     private void CloseButton_Click(object sender, RoutedEventArgs e)
     {
         Close();

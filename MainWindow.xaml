@@ -8,7 +8,9 @@
         Title="Dashboard" 
         Height="450" 
         Width="1350"
-        Background="#111827">
+        Background="#111827"
+        WindowStyle="None"
+        AllowsTransparency="True">
 
     <Window.Resources>
         <Style x:Key="UsageTileStyle" TargetType="Border">
@@ -47,7 +49,11 @@
     </Window.Resources>
 
     <StackPanel>
-        <Button Content="⨉" FontSize="24" Foreground="White" Click="CloseButton_Click" HorizontalAlignment="Right" Margin="10" Background="Transparent" BorderBrush="Transparent"/>
+        <StackPanel MouseLeftButtonDown="Drag_Window" MouseMove="Drag_Window_From_Max" Background="Transparent">
+            <Border BorderThickness="0,0,0,1" BorderBrush="#0e189a" Margin="0,0,0,20">
+                <Button Content="⨉" FontSize="24" Foreground="White" Click="CloseButton_Click" HorizontalAlignment="Right" Margin="10" Background="Transparent" BorderBrush="Transparent"/>
+            </Border>
+        </StackPanel>
         <StackPanel Orientation="Horizontal">
             <StackPanel Margin="20">
                 <UniformGrid Rows="1" Columns="2">
